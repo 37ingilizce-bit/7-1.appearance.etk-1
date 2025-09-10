@@ -1,0 +1,527 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hair Description Exercise</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 95vw;
+            width: 95%;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(45deg, #ff6b6b, #feca57);
+            color: white;
+            text-align: center;
+            padding: 30px;
+            font-size: 2em;
+            font-weight: bold;
+        }
+
+        .exercise {
+            margin: 30px;
+            background: #f8f9ff;
+            border-radius: 15px;
+            padding: 30px;
+            border: 3px solid #e1e8ff;
+        }
+
+        .exercise-title {
+            background: #ff6b6b;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 25px;
+            display: inline-block;
+            font-weight: bold;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+        }
+
+        .word-bank {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255,255,255,0.8);
+            border-radius: 10px;
+            border: 2px dashed #ddd;
+        }
+
+        .word-tag {
+            background: linear-gradient(45deg, #ff8c42, #ff6b35);
+            color: white;
+            padding: 18px 32px;
+            border-radius: 30px;
+            cursor: grab;
+            user-select: none;
+            font-weight: 600;
+            font-size: 18px;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(255, 140, 66, 0.4);
+            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            min-width: 150px;
+            text-align: center;
+        }
+
+        .word-tag:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(255, 140, 66, 0.5);
+        }
+
+        .word-tag:active {
+            cursor: grabbing;
+            transform: scale(0.95);
+        }
+
+        .images-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+            padding: 0 10px;
+        }
+
+        .image-item {
+            background: white;
+            border-radius: 15px;
+            overflow: visible;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            margin: 20px 10px;
+        }
+
+        .image-item:hover {
+            transform: translateY(-8px) scale(1.05);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+            z-index: 10;
+        }
+
+        .image-wrapper {
+            position: relative;
+            overflow: hidden;
+            height: 320px;
+            background: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 3px solid #ff6b6b;
+            margin: 10px;
+            border-radius: 10px;
+            margin-top: 25px;
+        }
+
+        .image-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            padding: 5px;
+        }
+
+        .image-item:hover .image-wrapper img {
+            transform: scale(1.15);
+        }
+
+        .image-number {
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            background: #ff6b6b;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 18px;
+            border: 4px solid white;
+            z-index: 100;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+        }
+
+        .placeholder-image {
+            color: #999;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .drop-zone {
+            min-height: 80px;
+            border: 2px dashed #ddd;
+            border-radius: 30px;
+            margin: 10px;
+            padding: 18px 32px;
+            background: #fafafa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            color: #999;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .drop-zone.has-content {
+            background: linear-gradient(45deg, #ff8c42, #ff6b35);
+            color: white;
+            border: none;
+            font-weight: 600;
+            font-size: 18px;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            box-shadow: 0 6px 20px rgba(255, 140, 66, 0.4);
+        }
+
+        .drop-zone.drag-over {
+            border-color: #4facfe;
+            background: #e8f4fd;
+            color: #4facfe;
+        }
+
+        .drop-zone.correct {
+            background: linear-gradient(45deg, #4caf50, #8bc34a) !important;
+            border: none !important;
+            color: white !important;
+            font-weight: 600;
+            font-size: 18px;
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .drop-zone.incorrect {
+            background: linear-gradient(45deg, #f44336, #e57373) !important;
+            border: none !important;
+            color: white !important;
+            font-weight: 600;
+            font-size: 18px;
+            box-shadow: 0 6px 20px rgba(244, 67, 54, 0.4);
+            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .check-btn {
+            background: linear-gradient(45deg, #4caf50, #8bc34a);
+            color: white;
+            border: none;
+            padding: 18px 35px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 18px;
+            margin: 15px 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+            min-width: 160px;
+        }
+
+        .check-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(76, 175, 80, 0.5);
+        }
+
+        .reset-btn {
+            background: linear-gradient(45deg, #ff6b6b, #feca57);
+            color: white;
+            border: none;
+            padding: 18px 35px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 18px;
+            margin: 15px 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+            min-width: 160px;
+        }
+
+        .reset-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.5);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                width: 98%;
+                max-width: 98vw;
+                margin: 10px auto;
+            }
+            
+            .images-container {
+                grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+                gap: 20px;
+                padding: 0 5px;
+            }
+            
+            .exercise {
+                margin: 15px;
+                padding: 20px;
+            }
+
+            .header {
+                padding: 20px;
+                font-size: 1.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            Hair Description Exercise
+        </div>
+        
+        <!-- Exercise 8 -->
+        <div class="exercise">
+            <div class="exercise-title">8 Write the words / phrases under the correct pictures.</div>
+            
+            <div class="word-bank" id="wordBank1">
+                <div class="word-tag" draggable="true" data-text="short hair">short hair</div>
+                <div class="word-tag" draggable="true" data-text="medium-length hair">medium-length hair</div>
+                <div class="word-tag" draggable="true" data-text="long hair">long hair</div>
+                <div class="word-tag" draggable="true" data-text="bald">bald</div>
+            </div>
+
+            <div class="images-container">
+                <div class="image-item">
+                    <div class="image-number">1</div>
+                    <div class="image-wrapper">
+                        <img src="1.png" alt="Person 1" onerror="this.parentElement.innerHTML='<div class=placeholder-image>Image: 1.png<br>Blonde woman with long straight hair</div>'">
+                    </div>
+                    <div class="drop-zone" data-exercise="1" data-image="1">Uzun saçlı</div>
+                </div>
+                
+                <div class="image-item">
+                    <div class="image-number">2</div>
+                    <div class="image-wrapper">
+                        <img src="2.png" alt="Person 2" onerror="this.parentElement.innerHTML='<div class=placeholder-image>Image: 2.png<br>Blonde woman with short wavy hair</div>'">
+                    </div>
+                    <div class="drop-zone" data-exercise="1" data-image="2">Orta uzunlukta saça sahip</div>
+                </div>
+                
+                <div class="image-item">
+                    <div class="image-number">3</div>
+                    <div class="image-wrapper">
+                        <img src="3.png" alt="Person 3" onerror="this.parentElement.innerHTML='<div class=placeholder-image>Image: 3.png<br>Young person with short brown hair</div>'">
+                    </div>
+                    <div class="drop-zone" data-exercise="1" data-image="3">Kısa saçlı</div>
+                </div>
+                
+                <div class="image-item">
+                    <div class="image-number">4</div>
+                    <div class="image-wrapper">
+                        <img src="4.png" alt="Person 4" onerror="this.parentElement.innerHTML='<div class=placeholder-image>Image: 4.png<br>Bald man with beard</div>'">
+                    </div>
+                    <div class="drop-zone" data-exercise="1" data-image="4">Kel</div>
+                </div>
+            </div>
+            
+            <button class="check-btn" onclick="checkAnswers(1)">Check Answers</button>
+            <button class="reset-btn" onclick="resetExercise(1)">Reset Exercise 8</button>
+        </div>
+
+        <!-- Exercise 9 -->
+        <div class="exercise">
+            <div class="exercise-title">9 Write the phrases under the correct pictures.</div>
+            
+            <div class="word-bank" id="wordBank2">
+                <div class="word-tag" draggable="true" data-text="dark hair">dark hair</div>
+                <div class="word-tag" draggable="true" data-text="fair hair">fair hair</div>
+                <div class="word-tag" draggable="true" data-text="red hair">red hair</div>
+            </div>
+
+            <div class="images-container">
+                <div class="image-item">
+                    <div class="image-number">1</div>
+                    <div class="image-wrapper">
+                        <img src="5.png" alt="Person 5" onerror="this.parentElement.innerHTML='<div class=placeholder-image>Image: 5.png<br>Woman with long dark hair</div>'">
+                    </div>
+                    <div class="drop-zone" data-exercise="2" data-image="1">Koyu saçlı</div>
+                </div>
+                
+                <div class="image-item">
+                    <div class="image-number">2</div>
+                    <div class="image-wrapper">
+                        <img src="6.png" alt="Person 6" onerror="this.parentElement.innerHTML='<div class=placeholder-image>Image: 6.png<br>Woman with curly red/orange hair</div>'">
+                    </div>
+                    <div class="drop-zone" data-exercise="2" data-image="2">Kızıl Saçlı</div>
+                </div>
+                
+                <div class="image-item">
+                    <div class="image-number">3</div>
+                    <div class="image-wrapper">
+                        <img src="7.png" alt="Person 7" onerror="this.parentElement.innerHTML='<div class=placeholder-image>Image: 7.png<br>Woman with blonde/fair hair</div>'">
+                    </div>
+                    <div class="drop-zone" data-exercise="2" data-image="3">Sarı saçlı</div>
+                </div>
+            </div>
+            
+            <button class="check-btn" onclick="checkAnswers(2)">Check Answers</button>
+            <button class="reset-btn" onclick="resetExercise(2)">Reset Exercise 9</button>
+        </div>
+    </div>
+
+    <script>
+        let draggedElement = null;
+
+        // Drag and drop functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const wordTags = document.querySelectorAll('.word-tag');
+            const dropZones = document.querySelectorAll('.drop-zone');
+
+            wordTags.forEach(tag => {
+                tag.addEventListener('dragstart', handleDragStart);
+            });
+
+            dropZones.forEach(zone => {
+                zone.addEventListener('dragover', handleDragOver);
+                zone.addEventListener('drop', handleDrop);
+                zone.addEventListener('dragenter', handleDragEnter);
+                zone.addEventListener('dragleave', handleDragLeave);
+            });
+        });
+
+        function handleDragStart(e) {
+            draggedElement = this;
+            this.style.opacity = '0.5';
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+        }
+
+        function handleDragEnter(e) {
+            e.preventDefault();
+            this.classList.add('drag-over');
+        }
+
+        function handleDragLeave(e) {
+            this.classList.remove('drag-over');
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            this.classList.remove('drag-over');
+            
+            if (draggedElement) {
+                // Clear the drop zone
+                this.innerHTML = '';
+                this.textContent = draggedElement.dataset.text;
+                this.classList.add('has-content');
+                this.classList.remove('correct', 'incorrect');
+                
+                // Create a new word tag to replace the dragged one
+                const newTag = draggedElement.cloneNode(true);
+                newTag.style.opacity = '1';
+                newTag.addEventListener('dragstart', handleDragStart);
+                
+                // Remove the original tag
+                draggedElement.remove();
+                
+                // Add the new tag back to the word bank (if needed for multiple uses)
+                // Uncomment the next line if you want words to return to the bank
+                // draggedElement.parentElement.appendChild(newTag);
+                
+                draggedElement = null;
+            }
+        }
+
+        function checkAnswers(exerciseNumber) {
+            // Correct answers for each exercise
+            const correctAnswers = {
+                1: {
+                    1: "long hair",           // Blonde woman with long hair
+                    2: "medium-length hair",  // Blonde woman with medium-length hair
+                    3: "short hair",          // Young person with short brown hair
+                    4: "bald"                 // Bald man
+                },
+                2: {
+                    1: "dark hair",      // Woman with dark hair
+                    2: "red hair",       // Woman with red/orange hair
+                    3: "fair hair"       // Woman with blonde/fair hair
+                }
+            };
+
+            const dropZones = document.querySelectorAll(`[data-exercise="${exerciseNumber}"]`);
+            let allCorrect = true;
+
+            dropZones.forEach(zone => {
+                const imageNumber = zone.dataset.image;
+                const userAnswer = zone.textContent.trim();
+                const correctAnswer = correctAnswers[exerciseNumber][imageNumber];
+
+                // Remove previous feedback classes
+                zone.classList.remove('correct', 'incorrect', 'has-content');
+
+                if (userAnswer === 'Drop answer here' || userAnswer === '') {
+                    // No answer provided
+                    zone.classList.add('has-content');
+                    allCorrect = false;
+                } else if (userAnswer === correctAnswer) {
+                    // Correct answer
+                    zone.classList.add('correct');
+                } else {
+                    // Incorrect answer
+                    zone.classList.add('incorrect');
+                    allCorrect = false;
+                }
+            });
+
+            // Show completion message
+            if (allCorrect) {
+                alert('🎉 Excellent! All answers are correct!');
+            } else {
+                alert('👀 Check the red answers and try again!');
+            }
+        }
+
+        function resetExercise(exerciseNumber) {
+            const wordBank = document.getElementById(`wordBank${exerciseNumber}`);
+            const dropZones = document.querySelectorAll(`[data-exercise="${exerciseNumber}"]`);
+            
+            // Clear all drop zones
+            dropZones.forEach(zone => {
+                zone.textContent = 'Drop answer here';
+                zone.classList.remove('has-content', 'correct', 'incorrect');
+            });
+            
+            // Restore word bank
+            const words = exerciseNumber === 1 
+                ? ['short hair', 'medium-length hair', 'long hair', 'bald']
+                : ['dark hair', 'fair hair', 'red hair'];
+            
+            wordBank.innerHTML = '';
+            words.forEach(word => {
+                const tag = document.createElement('div');
+                tag.className = 'word-tag';
+                tag.draggable = true;
+                tag.dataset.text = word;
+                tag.textContent = word;
+                tag.addEventListener('dragstart', handleDragStart);
+                wordBank.appendChild(tag);
+            });
+        }
+    </script>
+</body>
+</html>
